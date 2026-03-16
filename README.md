@@ -75,6 +75,7 @@ cp .env.example .env
 ## 7. Swagger 文档地址
 - `http://<host>:8000/docs`
 - `http://<host>:8000/redoc`
+- `http://<host>:8000/` 为可视化首页（项目介绍 + 接口总览）
 
 ## 8. 默认账号
 - 管理员：`admin / Admin123456`
@@ -93,7 +94,7 @@ cp .env.example .env
 4. 以 Collection 组织：auth/users/items/orders/upload/status/delay/idempotent/admin。
 
 ## 10. 各接口模块说明
-- 基础：`GET /`, `GET /health`
+- 基础：`GET /`（炫酷可视化首页）, `GET /health`（JSON 健康检查）
 - 认证：`/auth/register`, `/auth/login`, `/auth/profile`, `/auth/logout`, `/auth/forbidden-demo`
 - 用户：`/users` CRUD（软删除）
 - 商品：`/items` CRUD（含分页过滤排序）
@@ -206,8 +207,8 @@ cp .env.example .env
 ```
 
 ## 访问地址示例
-- 首页：`http://127.0.0.1:8000/`
-- 健康检查：`http://127.0.0.1:8000/health`
+- 首页（可视化接口导航）：`http://127.0.0.1:8000/`
+- 健康检查（JSON）：`http://127.0.0.1:8000/health`
 - 文档：`http://127.0.0.1:8000/docs`
 
 ## 最值得优先练习的 10 个接口

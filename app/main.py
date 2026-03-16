@@ -8,6 +8,7 @@ from app.config import settings
 from app.database import Base, SessionLocal, engine
 from app.routers import admin, auth, delay, echo, idempotent, items, orders, status, upload, users
 from app.utils.response import err, ok
+from app.utils.homepage import render_homepage
 from app.utils.seed import seed_data
 
 app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION)
@@ -44,26 +45,9 @@ async def validation_error_handler(_: Request, exc: RequestValidationError):
     )
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def root():
-    return ok(
-        {
-            "name": settings.APP_NAME,
-            "version": settings.APP_VERSION,
-            "modules": [
-                "auth",
-                "users",
-                "items",
-                "orders",
-                "upload",
-                "echo",
-                "status",
-                "delay/flaky/unstable",
-                "idempotent",
-                "admin",
-            ],
-        }
-    )
+    return render_homepage(settings.APP_NAME, settings.APP_VERSION)
 
 
 @app.get("/health")
