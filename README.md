@@ -74,8 +74,8 @@ cp .env.example .env
 
 ## 7. Swagger 文档地址
 - `http://<host>:8000/docs`
-- `http://<host>:8000/redoc`（内置离线回退页，避免外网受限导致空白）
-- `http://<host>:8000/` 为可视化首页（项目介绍 + 接口总览 + 点击看请求/响应示例）
+- `http://<host>:8000/redoc`
+- `http://<host>:8000/` 为可视化首页（项目介绍 + 接口总览）
 
 ## 8. 默认账号
 - 管理员：`admin / Admin123456`
