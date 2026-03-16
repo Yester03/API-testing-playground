@@ -9,9 +9,10 @@ from app.database import Base, SessionLocal, engine
 from app.routers import admin, auth, delay, echo, idempotent, items, orders, status, upload, users
 from app.utils.response import err, ok
 from app.utils.homepage import render_homepage
+from app.utils.redoc_fallback import render_redoc_fallback
 from app.utils.seed import seed_data
 
-app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION)
+app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, redoc_url=None)
 
 
 def init_app():
@@ -49,6 +50,12 @@ async def validation_error_handler(_: Request, exc: RequestValidationError):
 def root():
     return render_homepage(settings.APP_NAME, settings.APP_VERSION)
 
+
+
+
+@app.get("/redoc", include_in_schema=False)
+def redoc_fallback():
+    return render_redoc_fallback()
 
 @app.get("/health")
 def health():
