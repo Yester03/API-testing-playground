@@ -14,6 +14,7 @@
 - FastAPI + Uvicorn
 - SQLite + SQLAlchemy
 - Caddy（反向代理）
+- 密码哈希：PBKDF2-HMAC-SHA256（避免 bcrypt/passlib 兼容性问题）
 
 ## 3. 目录结构
 ```text
