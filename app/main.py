@@ -3,15 +3,17 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
 from app.routers import admin, auth, delay, echo, idempotent, items, orders, status, upload, users
 from app.utils.response import err, ok
 from app.utils.homepage import render_homepage
+from app.utils.redoc_fallback import render_redoc_fallback
 from app.utils.seed import seed_data
 
-app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION)
+app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, redoc_url=None)
 
 
 def init_app():
@@ -37,6 +39,13 @@ async def permission_error_handler(_: Request, exc: PermissionError):
     return err(message, 10012 if status_code == 401 else 10013, status_code)
 
 
+
+
+@app.exception_handler(IntegrityError)
+async def integrity_error_handler(_: Request, exc: IntegrityError):
+    _ = exc
+    return err("data conflict", 1409, 409)
+
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(_: Request, exc: RequestValidationError):
     return JSONResponse(
@@ -49,6 +58,12 @@ async def validation_error_handler(_: Request, exc: RequestValidationError):
 def root():
     return render_homepage(settings.APP_NAME, settings.APP_VERSION)
 
+
+
+
+@app.get("/redoc", include_in_schema=False)
+def redoc_fallback():
+    return render_redoc_fallback()
 
 @app.get("/health")
 def health():

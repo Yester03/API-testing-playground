@@ -75,6 +75,13 @@ def put_user(user_id: int, payload: UserUpdate, db: Session = Depends(get_db), c
     user = db.query(User).filter(User.id == user_id, User.is_deleted.is_(False)).first()
     if not user:
         return err("user not found", 10001, 404)
+    conflict = db.query(User).filter(
+        User.id != user_id,
+        User.is_deleted.is_(False),
+        ((User.username == payload.username) | (User.email == payload.email)),
+    ).first()
+    if conflict:
+        return err("username or email already exists", 10010, 409)
     user.username = payload.username
     user.email = payload.email
     user.role = payload.role
@@ -90,7 +97,17 @@ def patch_user(user_id: int, payload: UserPatch, db: Session = Depends(get_db), 
     user = db.query(User).filter(User.id == user_id, User.is_deleted.is_(False)).first()
     if not user:
         return err("user not found", 10001, 404)
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    updates = payload.model_dump(exclude_unset=True)
+    next_username = updates.get("username", user.username)
+    next_email = updates.get("email", user.email)
+    conflict = db.query(User).filter(
+        User.id != user_id,
+        User.is_deleted.is_(False),
+        ((User.username == next_username) | (User.email == next_email)),
+    ).first()
+    if conflict:
+        return err("username or email already exists", 10010, 409)
+    for key, value in updates.items():
         setattr(user, key, value)
     db.commit()
     db.refresh(user)
